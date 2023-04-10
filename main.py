@@ -26,17 +26,17 @@ def write_pairs(dest_path, imgs, labels):
         # print(path)
         cv2.imwrite(path, img)
 
-def read_pairs(src_path, w=28):
+def read_pairs(src_path, shape=(28, 28, 1)):
     start = time.time()
 
     files = os.listdir(src_path)
-    imgs = np.zeros((len(files), w, w, 1))
+    imgs = np.zeros((len(files), *shape))
     labels = np.zeros((len(files), 10), dtype='i')
 
     print("files found:", len(files))
 
     for i, file in enumerate(files):
-        imgs[i] = np.array(cv2.imread(os.path.join(src_path, file), cv2.IMREAD_GRAYSCALE)).reshape(w, w, 1) / 255.0
+        imgs[i] = np.array(cv2.imread(os.path.join(src_path, file), cv2.IMREAD_GRAYSCALE)).reshape(shape) / 255.0
         labels[i][int(file.split('_')[1].split('.')[0])] = 1
 
     print("elapsed: ", time.time() - start)
@@ -70,7 +70,7 @@ def write_encoded():
 def read_encoded():
     if len(os.listdir('./assets/encoded/train')) == 0 or len(os.listdir('./assets/encoded/test')) == 0:
         write_encoded()
-    return read_pairs('./assets/encoded/train', 4), read_pairs('./assets/encoded/test', 4)
+    return read_pairs('./assets/encoded/train', ENCODE_SHAPE), read_pairs('./assets/encoded/test', ENCODE_SHAPE)
 
 def train_autoencoder():
     (train_imgs, train_labels), (test_imgs, test_labels) = read_basic()
@@ -93,9 +93,9 @@ def generate_noise_dataset():
     for i, encode in enumerate(train_encodes):
         noise = np.zeros((4, 4, 1))
 
-        # print(train_labels[i])
-        # display_encode(encode)
-        # input("")
+        print(train_labels[i])
+        display_encode(encode)
+        input("")
 
         for j in range(10):
             noisy_encode = np.add(encode, noise)
@@ -146,14 +146,14 @@ def gen_img_of(prompt):
         noisy_encode = np.clip(np.subtract(noisy_encode, noise_prediction * (.9 ** i)), 0, 1)
         display_encode(noisy_encode)
 
-clear_dir('./assets/basic/test')
-clear_dir('./assets/basic/train')
-clear_dir('./assets/encoded/test')
-clear_dir('./assets/encoded/train')
+# clear_dir('./assets/basic/test')
+# clear_dir('./assets/basic/train')
+# clear_dir('./assets/encoded/test')
+# clear_dir('./assets/encoded/train')
 
 # train_autoencoder()
 
-# train_noise_predictor()
+train_noise_predictor()
 
 for i in range(10):
     print(i)

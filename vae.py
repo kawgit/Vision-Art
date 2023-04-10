@@ -12,13 +12,12 @@ def load_encoder():
     else:
         encoder = keras.Sequential([
             layers.Reshape((28, 28, 1)),
-            layers.Conv2D(16, 3, activation="relu"),
-            layers.Conv2D(32, 3, activation="relu"),
+            layers.Conv2D(64, 5, activation="relu"),
+            layers.Conv2D(32, 4, activation="relu"),
             layers.MaxPooling2D(3),
-            layers.Conv2D(32, 3, activation="relu"),
-            layers.Conv2D(16, 3, activation="sigmoid"),
+            layers.Conv2D(16, 2, activation="sigmoid"),
             layers.GlobalMaxPooling2D(),
-            layers.Reshape((4, 4, 1)),
+            layers.Reshape((6, 6, 1)),
         ], name="encoder")
 
         encoder.build(input_shape=(None, 28, 28, 1))
@@ -32,11 +31,11 @@ def load_decoder():
     else:
         decoder = keras.Sequential([
             layers.Reshape((4, 4, 1)),
-            layers.Conv2DTranspose(16, 3, activation="relu"),
+            layers.Conv2DTranspose(16, 2, activation="relu"),
             layers.Conv2DTranspose(32, 3, activation="relu"),
             layers.UpSampling2D(3),
-            layers.Conv2DTranspose(16, 3, activation="relu"),
-            layers.Conv2DTranspose(1, 3, activation="sigmoid"),
+            layers.Conv2DTranspose(16, 4, activation="relu"),
+            layers.Conv2DTranspose(1, 5, activation="sigmoid"),
             layers.Reshape((28, 28, 1)),
         ], name="decoder")
         decoder.build(input_shape=(None, 4, 4, 1))
