@@ -26,7 +26,7 @@ def load_noise_predictor():
         noise_predictor = keras.Model(inputs=[noisy_encoded_input, label_input], outputs=y, name="noise_predictor")
         noise_predictor.compile(optimizer='adam', loss='mean_squared_error')
     
-    keras.utils.plot_model(noise_predictor, "noise_predictor.png", show_shapes=True)
+    # keras.utils.plot_model(noise_predictor, "noise_predictor.png", show_shapes=True)
     return noise_predictor
 
 # labels, noisy_encodeds, noises = generate_noise_dataset()
