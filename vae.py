@@ -24,10 +24,10 @@ def load_encoder():
         print("AYOAYO")
         encoder = keras.Sequential([
             layers.Reshape(DECODE_SHAPE),
-            layers.Conv2D(16, 5, activation="relu"),
-            layers.Conv2D(16, 5, activation="sigmoid"),
-            layers.Conv2D(16, 5, activation="sigmoid"),
-            layers.Conv2D(5, 3, activation="sigmoid"),
+            layers.Conv2D(64, 5, activation="tanh"),
+            layers.Conv2D(32, 5, activation="tanh"),
+            layers.Conv2D(16, 5, activation="tanh"),
+            layers.Conv2D(5, 3, activation="tanh"),
             layers.Conv2D(3, 3, activation="sigmoid"),
             layers.Reshape(ENCODE_SHAPE),
         ], name="encoder")
@@ -43,10 +43,10 @@ def load_decoder():
     else:
         decoder = keras.Sequential([
             layers.Reshape(ENCODE_SHAPE),
-            layers.Conv2DTranspose(16, 3, activation="sigmoid"),
-            layers.Conv2DTranspose(16, 3, activation="sigmoid"),
-            layers.Conv2DTranspose(16, 5, activation="sigmoid"),
-            layers.Conv2DTranspose(5, 5, activation="sigmoid"),
+            layers.Conv2DTranspose(64, 3, activation="tanh"),
+            layers.Conv2DTranspose(32, 3, activation="tanh"),
+            layers.Conv2DTranspose(32, 5, activation="tanh"),
+            layers.Conv2DTranspose(10, 5, activation="tanh"),
             layers.Conv2DTranspose(1, 5, activation="sigmoid"),
             layers.Reshape(DECODE_SHAPE),
         ], name="decoder")

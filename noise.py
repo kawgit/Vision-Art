@@ -11,21 +11,21 @@ def load_noise_predictor():
     if os.path.isdir("noise_predictor"):
         noise_predictor = tf.keras.models.load_model('noise_predictor')
     else:
-        noisy_encoded_input = keras.Input(shape=(4, 4, 1), name="noisy_encoded")
+        noisy_encoded_input = keras.Input(shape=ENCODE_SHAPE, name="noisy_encoded")
         label_input = keras.Input(shape=(10,), name="label")
 
         noisy_encoded_flattened = layers.Flatten()(noisy_encoded_input)
         label_flattened = layers.Flatten()(label_input)
 
         x = layers.concatenate([noisy_encoded_flattened, label_flattened])
-        x = layers.Dense(64, activation='relu')(x)
-        x = layers.Dense(32, activation='relu')(x)
-        x = layers.Dense(16, activation='tanh')(x)
-        y = layers.Reshape((4, 4, 1))(x)
+        x = layers.Dense(1600, activation='tanh')(x)
+        x = layers.Dense(1600, activation='tanh')(x)
+        x = layers.Dense(432, activation='tanh')(x)
+        y = layers.Reshape(ENCODE_SHAPE)(x)
 
         noise_predictor = keras.Model(inputs=[noisy_encoded_input, label_input], outputs=y, name="noise_predictor")
-        noise_predictor.compile(optimizer='adam', loss='mean_squared_error')
     
+    noise_predictor.compile(optimizer='sgd', loss='mean_squared_error')
     # keras.utils.plot_model(noise_predictor, "noise_predictor.png", show_shapes=True)
     return noise_predictor
 
