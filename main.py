@@ -20,7 +20,7 @@ def train_autoencoder():
     global decoder
     
     while True:
-        autoencoder.fit(train_imgs, train_imgs, epochs=1, batch_size=32)
+        autoencoder.fit(train_imgs, train_imgs, epochs=1, batch_size=32) #starting loss: .0870
         encoder.save('encoder')
         decoder.save('decoder')
 
@@ -33,10 +33,6 @@ def generate_noise_dataset():
 
     for i, encode in enumerate(train_encodes):
         noise = np.zeros(ENCODE_SHAPE)
-
-        print(train_labels[i])
-        display_encode(encode)
-        input("")
 
         for j in range(10):
             noisy_encode = np.add(encode, noise)
@@ -87,12 +83,23 @@ def gen_img_of(prompt):
         noisy_encode = np.clip(np.subtract(noisy_encode, noise_prediction * (.9 ** i)), 0, 1)
         display_encode(noisy_encode)
 
+def test_autoencoder(decode):
+    cv2.imwrite("original.png", np.clip(np.rint(decode * 255.0), 0, 255))
+    encode = encoder.predict(np.array([decode]))[0]
+    display_encode(encode)
+
 # clear_dir('./assets/basic/test')
 # clear_dir('./assets/basic/train')
-# clear_dir('./assets/encoded/test')
-# clear_dir('./assets/encoded/train')
+clear_dir('./assets/encoded/test')
+clear_dir('./assets/encoded/train')
 
-train_autoencoder()
+# train_autoencoder()
+
+(train_encodes, train_labels), (test_encodes, test_labels) = fetch_basic()
+
+for i in range(1000):
+    test_autoencoder(train_encodes[i])
+    input("")
 
 # train_noise_predictor()
 

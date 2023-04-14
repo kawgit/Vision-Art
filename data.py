@@ -26,6 +26,7 @@ def write_pairs(dest_path, imgs, labels):
         path = dest_path + "/" + name + '.png'
         # print(path)
         cv2.imwrite(path, img)
+        print(dest_path, img)
 
 def read_pairs(src_path, shape=(28, 28, 1)):
     start = time.time()
@@ -40,12 +41,20 @@ def read_pairs(src_path, shape=(28, 28, 1)):
         imgs[i] = np.array(cv2.imread(os.path.join(src_path, file), cv2.IMREAD_GRAYSCALE)).reshape(shape) / 255.0
         labels[i][int(file.split('_')[1].split('.')[0])] = 1
 
-        if i % 100 == 0:
+        if i % 1000 == 0:
             print(i, "/", len(files))
 
     print("elapsed: ", time.time() - start)
 
     return imgs, labels
+
+def fetch_basic():
+    (train_imgs, train_labels), (test_imgs, test_labels) = tf.keras.datasets.fashion_mnist.load_data()
+    train_imgs = train_imgs / 255.0
+    test_imgs = test_imgs / 255.0
+    train_labels = keras.utils.to_categorical(train_labels)
+    test_labels = keras.utils.to_categorical(test_labels)
+    return (train_imgs, train_labels), (test_imgs, test_labels)
 
 def write_basic():
     (train_imgs, train_labels), (test_imgs, test_labels) = tf.keras.datasets.fashion_mnist.load_data()
@@ -59,6 +68,7 @@ def write_basic():
     write_pairs('./assets/basic/test', test_imgs, test_labels)
 
 def read_basic():
+    return fetch_basic()
     if len(os.listdir('./assets/basic/train')) == 0 or len(os.listdir('./assets/basic/test')) == 0:
         write_basic()
     return read_pairs('./assets/basic/train'), read_pairs('./assets/basic/test')
